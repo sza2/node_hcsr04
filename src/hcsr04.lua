@@ -17,7 +17,7 @@
 
 hcsr04 = {};
 
-function hcsr04.init(pin_trig, pin_echo)
+function hcsr04.init(pin_trig, pin_echo, average)
 	local self = {}
 	self.time_start = 0
 	self.time_end = 0
@@ -25,6 +25,7 @@ function hcsr04.init(pin_trig, pin_echo)
 	self.echo = pin_echo or 3
 	gpio.mode(self.trig, gpio.OUTPUT)
 	gpio.mode(self.echo, gpio.INT)
+	self.average = average or 3
 
 	function self.echo_cb(level)
 		if level == 1 then
@@ -46,5 +47,20 @@ function hcsr04.init(pin_trig, pin_echo)
 		end
 		return (self.time_end - self.time_start) / 5800
 	end
+
+	function self.measure_avg()
+		if self.measure() < 0 then  -- drop the first sample
+			return -1 -- if the first sample is invalid, return -1
+		avg = 0
+		for cnt = 1, self.average do
+			distance = self.measure()
+			if distance < 0 then
+				return -1 -- return -1 if any of the meas fails
+			avg = avg + distance
+			tmr.delay(30000)
+		end
+		return avg / self.average
+	end
+
 	return self
 end

@@ -19,3 +19,6 @@ hcsr04.measure() initiate the measurement and returns the distance in meters (or
 Bear in mind HC-SR04 nominal VDD is 5V. Based on my experience it stops working
 under 3.5V, so the ESP8266 VDD may not be sufficient to power the ultrasonic
 sensor.
+
+Based on Rolox recommendation an average function was introduced. Theoretically
+it makes the distance measurement more precise.

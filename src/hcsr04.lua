@@ -51,11 +51,13 @@ function hcsr04.init(pin_trig, pin_echo, average)
 	function self.measure_avg()
 		if self.measure() < 0 then  -- drop the first sample
 			return -1 -- if the first sample is invalid, return -1
+		end
 		avg = 0
 		for cnt = 1, self.average do
 			distance = self.measure()
 			if distance < 0 then
 				return -1 -- return -1 if any of the meas fails
+			end
 			avg = avg + distance
 			tmr.delay(30000)
 		end
